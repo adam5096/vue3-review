@@ -1,49 +1,67 @@
 <template>
     <div class="person">
-    <h1>情況三: 監聽 [ reactive] 定義的物件類型數據</h1>
-       <h2>姓名: {{ person.name }}</h2>
-       <h2>年齡: {{ person.age }}</h2>
-       <button @click="changeName">修改名字</button>
-       <button @click="changeAge">修改年紀</button>
-       <button @click="changepPerson">修改整個人</button>
+    <h1>情況四: 監聽 ref, reactive 定義的 [ 物件類型 ] "之中的某個屬性"</h1>
+        <h2>姓名: {{ person.name }} </h2>
+        <h2>年齡: {{ person.age }}</h2>
+        <h2>車子: {{ person.car.c1 }}, {{ person.car.c2 }}</h2>
+        <hr>
+        <button @click="changeName">修改名字</button>
+        <button @click="changeAge">修改年紀</button>
+        <button @click="changeCar1">修改第一台車</button>
+        <button @click="changeCar2">修改第二台車</button>
+        <button @click="changeAllCar">修改整個車子</button>
     </div>
 
 </template>
 
 <script setup lang="ts" name="PersonTest">
-    import { ref, watch, reactive } from 'vue'
+    import { isConstructorDeclaration } from 'typescript'
+import { ref, watch, reactive } from 'vue'
     // 數據
     let person = reactive({
         name: 'adam',
-        age: 18
+        age: 18,
+        car: {
+            c1: 'BMW',
+            c2: 'Benz'
+        }
     })
     // 數據 END
 
     // 方法
     const changeName = () => {
-        person.name += " ~"
+        person.name += ' ~'
     }
     const changeAge = () => {
         person.age += 1
     }
-    const changepPerson = () => {
-        // person = {
-        //     name: 'chou',
-        //     age: 90
-        // }
-        Object.assign(person, {
-            name: 'chou',
-            age: 90
-        })
+    const changeCar1 = () => {
+        person.car.c1 += ' ~'
     }
+    const changeCar2 = () => {
+        person.car.c2 += ' ~'
+    }
+    const changeAllCar = () => {
+        person.car = {
+            c1: 'Toyota',
+            c2: 'Honda'
+        }
+    }
+
     // 方法 END
+    // 情況四: 監聽 ref, reactive 定義的 [ 物件類型 ] "之中的某個屬性"
+
+    // const stopWatch01 = watch(() => person.name, (newVal, oldVal) => {
+    //     console.log('newVal --- oldVal', newVal, oldVal)
+    // })
 
 
-    // 情況三: 監聽 [ reactive] 定義的物件類型數據
-    // 對於監聽 reactive 數據: 會隱式創造深度監聽，且無法關閉
-   const watchResult = watch(person, (newValue, oldValue) => {
-        console.log('person 的值變了', newValue, oldValue)
+    const stopWatch02 = watch(() => person.car, (newVal, oldVal) => {
+        console.log('newVal --- oldVal', newVal, oldVal)
     })
+
+    // 結論: 監聽 ref, reactive 深層的屬性或物件，一律寫成函式型態，如有額外深層監聽需求，再加寫 {deep: true} 就好
+
     // watch END
 </script>
 
