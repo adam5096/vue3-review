@@ -1,28 +1,68 @@
 <template>
     <div class="person">
-    <h1>情況一: 監聽 [ref] 基本類型數據</h1>
-       <h2>當前加總: {{ sum }}</h2>
-       <button @click="changeSum">點我 sum + 1</button>
+    <h1>情況四: 監聽 ref, reactive 定義的 [ 物件類型 ] "之中的某個屬性"</h1>
+        <h2>姓名: {{ person.name }} </h2>
+        <h2>年齡: {{ person.age }}</h2>
+        <h2>車子: {{ person.car.c1 }}, {{ person.car.c2 }}</h2>
+        <hr>
+        <button @click="changeName">修改名字</button>
+        <button @click="changeAge">修改年紀</button>
+        <button @click="changeCar1">修改第一台車</button>
+        <button @click="changeCar2">修改第二台車</button>
+        <button @click="changeAllCar">修改整個車子</button>
     </div>
 
 </template>
 
 <script setup lang="ts" name="PersonTest">
-    import { ref, watch } from 'vue'
+    import { isConstructorDeclaration } from 'typescript'
+import { ref, watch, reactive } from 'vue'
     // 數據
-    let sum = ref(0)
-
-    const changeSum = () => {
-        sum.value++
-    }
-
-    // 監聽
-    const stopWatch = watch(sum, (newValue, oldValue) => {
-        console.log('sum 的值變了', newValue, oldValue)
-        if (newValue >= 10) {
-            stopWatch()
+    let person = reactive({
+        name: 'adam',
+        age: 18,
+        car: {
+            c1: 'BMW',
+            c2: 'Benz'
         }
     })
+    // 數據 END
+
+    // 方法
+    const changeName = () => {
+        person.name += ' ~'
+    }
+    const changeAge = () => {
+        person.age += 1
+    }
+    const changeCar1 = () => {
+        person.car.c1 += ' ~'
+    }
+    const changeCar2 = () => {
+        person.car.c2 += ' ~'
+    }
+    const changeAllCar = () => {
+        person.car = {
+            c1: 'Toyota',
+            c2: 'Honda'
+        }
+    }
+
+    // 方法 END
+    // 情況四: 監聽 ref, reactive 定義的 [ 物件類型 ] "之中的某個屬性"
+
+    // const stopWatch01 = watch(() => person.name, (newVal, oldVal) => {
+    //     console.log('newVal --- oldVal', newVal, oldVal)
+    // })
+
+
+    const stopWatch02 = watch(() => person.car, (newVal, oldVal) => {
+        console.log('newVal --- oldVal', newVal, oldVal)
+    })
+
+    // 結論: 監聽 ref, reactive 深層的屬性或物件，一律寫成函式型態，如有額外深層監聽需求，再加寫 {deep: true} 就好
+
+    // watch END
 </script>
 
 <style lang="css" scoped>
