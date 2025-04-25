@@ -1,91 +1,68 @@
 <template>
     <div class="person">
-        <h2>姓名: {{ name }}</h2>
-        <h2>年齡: {{ age }}</h2>
-        <h2>性別: {{ gender }}</h2>
-
-        <br><button @click="changeName">修改姓名</button>
-        <br><button @click="changeAge">修改年齡</button>
-        <br><button @click="showTel">查看聯絡方式</button>
+    <h1>情況四: 監聽 ref, reactive 定義的 [ 物件類型 ] "之中的某個屬性"</h1>
+        <h2>姓名: {{ person.name }} </h2>
+        <h2>年齡: {{ person.age }}</h2>
+        <h2>車子: {{ person.car.c1 }}, {{ person.car.c2 }}</h2>
+        <hr>
+        <button @click="changeName">修改名字</button>
+        <button @click="changeAge">修改年紀</button>
+        <button @click="changeCar1">修改第一台車</button>
+        <button @click="changeCar2">修改第二台車</button>
+        <button @click="changeAllCar">修改整個車子</button>
     </div>
+
 </template>
 
-<!-- <script lang="ts">
-// name 會被記錄在 vue 的 devtools 中 (可點開瀏覽器開發工具查看)
-    export default {
-        name: 'Person123',
-        // setup() {
-            // setup 函數中的 this 是 undefined，vue 3 中已經弱化了 this
-
-            // 數據
-            // let name = ('哈哈')
-            // let age = (18)
-            // let gender = ('男')
-            // let tel = ('12345678901')
-
-
-            // 函數
-            // 這樣修改 name 不會觸發響應式
-            // name 確實改變了，但畫面不會變
-            // function changeName() {
-            //     console.log('@@ changeName fired')
-            //     name = '小明'
-            //     console.log(name)
-            // }
-            // function changeAge() {
-            //     console.log('@@ changeAge fired')
-            //     age += 1
-            //     console.log(age)
-            // }
-            // function showTel() {
-            //     console.log('@@ showTel fired')
-            //     alert(tel)
-            //     console.log(tel)
-            // }
-            // 將數據、函數交出去，模板中才能使用
-            // return {
-            //     name,
-            //     age,
-            //     gender,
-            //     tel,
-            //     changeName,
-            //     changeAge,
-            //     showTel
-            // }
-        // }
-    }
-</script> -->
-
-<!-- vite-plugin-vue-setup-extend 插件 -->
-<!-- 支持在 setup 中加入 name 屬性來設置元件名稱-->
-
-<script setup lang="ts">
-    // setup 函數中的 this 是 undefined，vue 3 中已經弱化了 this
+<script setup lang="ts" name="PersonTest">
+    import { isConstructorDeclaration } from 'typescript'
+import { ref, watch, reactive } from 'vue'
     // 數據
-    let name = ('哈哈')
-    let age = (18)
-    let gender = ('男')
-    let tel = ('12345678901')
+    let person = reactive({
+        name: 'adam',
+        age: 18,
+        car: {
+            c1: 'BMW',
+            c2: 'Benz'
+        }
+    })
+    // 數據 END
+
+    // 方法
+    const changeName = () => {
+        person.name += ' ~'
+    }
+    const changeAge = () => {
+        person.age += 1
+    }
+    const changeCar1 = () => {
+        person.car.c1 += ' ~'
+    }
+    const changeCar2 = () => {
+        person.car.c2 += ' ~'
+    }
+    const changeAllCar = () => {
+        person.car = {
+            c1: 'Toyota',
+            c2: 'Honda'
+        }
+    }
+
+    // 方法 END
+    // 情況四: 監聽 ref, reactive 定義的 [ 物件類型 ] "之中的某個屬性"
+
+    // const stopWatch01 = watch(() => person.name, (newVal, oldVal) => {
+    //     console.log('newVal --- oldVal', newVal, oldVal)
+    // })
 
 
-    // 函數
-    // 這樣修改 name 不會觸發響應式
-    // name 確實改變了，但畫面不會變
-    function changeName() {
-        console.log('@@ changeName fired')
-        name = '小明'
-        console.log(name)
-    }
-    function changeAge() {
-        console.log('@@ changeAge fired')
-        age += 1
-        console.log(age)
-    }
-    function showTel() {
-        console.log('@@ showTel fired')
-        alert(tel)
-        console.log(tel)
-    }
+    const stopWatch02 = watch(() => person.car, (newVal, oldVal) => {
+        console.log('newVal --- oldVal', newVal, oldVal)
+    })
+
+    // 結論: 監聽 ref, reactive 深層的屬性或物件，一律寫成函式型態，如有額外深層監聽需求，再加寫 {deep: true} 就好
+
+    // watch END
 </script>
 
 <style lang="css" scoped>
@@ -94,5 +71,13 @@
     box-shadow: 0 0 10px ;
     border-radius: 10px;
     padding: 20px;
+}
+
+button {
+    margin:0 5px;
+}
+
+li {
+    font-size: 20px;
 }
 </style>
