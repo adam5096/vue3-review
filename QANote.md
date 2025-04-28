@@ -73,3 +73,25 @@ const fullName = computed(() => {
 - 使用 `watch` 來處理副作用（如 API 調用、DOM 操作等）
 
 在你的 `Person.vue` 中，`fullName` 的 computed 就是一個沒有副作用的純函數，它只是計算並返回一個新的值。而如果我們需要基於 `fullName` 的變化來執行某些操作（如發送通知或更新其他數據），那就需要使用 `watch` 來處理這些副作用。
+
+# 請問現在 vue 3  語法中在使用 <router-view>, <router-link> 時，是否需要顯式書寫 import { RouterView } from 'vue-router'; 的語句?
+
+不需要顯式導入 `RouterView`。在 Vue 3 中，`<router-view>` 組件是 Vue Router 自動註冊的全局組件，不需要手動導入。
+
+讓我幫您移除這個不必要的導入：
+
+### 說明：
+
+1. **Vue Router 全局組件**：
+   - `<router-view>` 是 Vue Router 自動註冊的全局組件
+   - 不需要手動導入就可以在模板中使用
+
+2. **其他 Vue Router 全局組件**：
+   - `<router-link>` 也是全局組件
+   - 同樣不需要手動導入
+
+3. **需要導入的情況**：
+   - 只有當您需要使用 Vue Router 的 API（如 `useRouter`、`useRoute` 等）時才需要導入
+   - 例如：`import { useRouter, useRoute } from 'vue-router'`
+
+所以，您可以直接在模板中使用 `<router-view>` 和 `<router-link>` 而不需要任何導入語句。
