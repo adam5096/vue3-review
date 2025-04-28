@@ -49,14 +49,16 @@ import { ref, watch, reactive } from 'vue'
     }
 
     // 方法 END
-    // 情況四: 監聽 ref, reactive 定義的 [ 物件類型 ] "之中的某個屬性"
+
+
+    // 情況五: 監聽多個數據
 
     // const stopWatch01 = watch(() => person.name, (newVal, oldVal) => {
     //     console.log('newVal --- oldVal', newVal, oldVal)
     // })
 
 
-    const stopWatch02 = watch(() => person.car, (newVal, oldVal) => {
+    const stopWatch02 = watch([() => person.name, () => person.car.c1], (newVal, oldVal) => {
         console.log('newVal --- oldVal', newVal, oldVal)
     })
 

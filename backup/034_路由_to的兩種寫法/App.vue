@@ -4,14 +4,20 @@
         <Header />
         <!-- 導航區 -->
         <div class="navigate">
+            <!-- ********** 原生JS 使用 a 標籤 進行導航 ********** -->
+            <!-- <a href="#/home">首頁</a> -->
+            <!-- <a href="#/home">首頁</a> -->
+            <!-- <a href="#/about">新聞</a> -->
+
+            <hr>
 
             <!-- ********** vue 3 使用 router-link，通過使用者按下按鈕 進行導航 ********** -->
             <!-- active-class 是 vue-router 預設提供的類別名稱 -->
             <router-link to="/home" class="router-link" active-class="active">首頁</router-link>
             <br>
-            <router-link :to="{ name: 'xinwen' }" class="router-link" active-class="active">新聞</router-link>
+            <router-link to="/about" class="router-link" active-class="active">關於</router-link>
             <br>
-            <router-link :to="{ path: '/about' }" class="router-link" active-class="active">關於</router-link>
+            <router-link :to="{ path: '/news' }" class="router-link" active-class="active">新聞</router-link>
 
         </div>
 
