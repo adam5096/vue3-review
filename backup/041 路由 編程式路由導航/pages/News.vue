@@ -4,16 +4,10 @@
         <!-- News 裡的導航區 -->
         <ul>
             <li v-for="news in newsList" :key="news.id">
-                <!-- params 第一種寫法 -->
-                <router-link :to="`/news/detail/${news.id}/${news.title}/${news.content}`">{{ news.title
-                    }}</router-link>
-
-                <!-- params 第二種寫法 -->
-                <!-- 特別注意一: 使用 params 時，需要先在 router 中設定好路由，並且在 router 中設定好路由的 name，使用命名路由導航，而非path導航 -->
-                <!-- 特別注意二: params 物件中的 key 值，需要與 router 中設定好的路由的相同 (如本例的 path: 'detail/:id/:title/:content') -->
+                <button @click="handleShowNews(news)">查看新聞</button>
                 <router-link :to="{
                     name: 'seemore',
-                    params: {
+                    query: {
                         id: news.id,
                         title: news.title,
                         content: news.content
@@ -30,7 +24,10 @@
 </template>
 
 <script setup lang="ts">
-    import { defineOptions, reactive } from 'vue';
+    import { reactive } from 'vue';
+    import { useRouter } from 'vue-router';
+
+    const router = useRouter();
 
     defineOptions({
         name: 'News'
@@ -42,6 +39,18 @@
         { id: 'qhiwudh03', title: '震驚!!!!', content: '明天是週一' },
         { id: 'qhiwudh04', title: '好消息!!', content: '小學要開學了' }
     ])
+
+    const handleShowNews = (news: any) => {
+        router.push({
+            name: 'seemore',
+            query: {
+                id: news.id,
+                title: news.title,
+                content: news.content
+            }
+        })
+    }
+
 </script>
 
 <style scoped>
