@@ -1,7 +1,7 @@
 <template>
     <div class="count">
-        <h2>當前加總為 {{ sum }}</h2>
-        <h3>歡迎: {{ name }} 來到: {{ address }}</h3>
+        <h2>當前加總為 {{ countStore.sum }}</h2>
+        <h3>歡迎: {{ countStore.name }} 來到: {{ countStore.address }}</h3>
         <select v-model.number="userSelectNumber">
             <option value="1" selected>1</option>
             <option value="2">2</option>
@@ -17,34 +17,43 @@
 
     import { useCountStore } from '@/store/count' // 引入 count 小倉庫
 
-    import { storeToRefs } from 'pinia';
-
     // ******** 變數 ********
+    // let sum = ref(0) // 當前加總
     const countStore = useCountStore() // 建立 count 小倉庫實例
 
-    // 解構賦值，從倉庫中取出狀態，且狀態同時保持響應特性
-    // 只關心 store 中的狀態，為其加上響應特性。並不會包裹 store 中的方法
-    const { sum, name, address } = storeToRefs(countStore)
-    
     let userSelectNumber = ref(1) // 每次加、減法一單位，使用者選擇
 
     const subBtn = useTemplateRef('subBtn') //  取得減法按鈕 DOM 元素
 
     // ******** 變數 END ********
 
-
     // ******** 函數 ********
     // 此函數時刻檢查減法按鈕是否要停用
     const updateButtonState = () => {
         if (subBtn.value) {
             // subBtn.value.disabled = sum.value <= 0
-            subBtn.value.disabled = countStore.sum <= 0
+            subBtn.value.disabled = countStore.sum <= 0 
         }
     }
 
-    
+    onMounted(() => {
+        updateButtonState()// 掛載時，檢查減法按鈕是否要停用
+    })
 
     const handleAdd = () => {
+        // sum.value += userSelectNumber.value
+
+        // pinia 第一種修改方式
+        // countStore.sum += userSelectNumber.value
+
+
+        // 第二種修改方式: 批量修改
+        // $patch 可以直接修改 state 中多個狀態
+        // countStore.$patch({
+            // sum: countStore.sum + userSelectNumber.value,
+            // name: countStore.name + '~ ',
+            // address: countStore.address + '~ '
+        // })
 
         // 第三種修改方式: 使用 actions 修改
         // 傳入參數 userSelectNumber.value 後，會落到倉庫中被  num 接住 (可在倉庫找到這個變數)
@@ -62,10 +71,6 @@
 
         updateButtonState() // 減法時，檢查減法按鈕是否要停用
     }
-
-    onMounted(() => {
-        updateButtonState()// 掛載時，檢查減法按鈕是否要停用
-    })
     // ******** 函數 END ********
 </script>
 
