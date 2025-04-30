@@ -130,3 +130,106 @@ const fullName = computed(() => {
 - 它保持了良好的類型安全性
 
 如果你想要更簡短的寫法，我們還可以使用解構賦值，但那樣可能會降低代碼的可讀性。當前的寫法在簡潔性和可讀性之間取得了很好的平衡。
+
+# 052 元件通信 方式 1: props
+
+## 父、子元件都做設置
+
+父:
+```vue
+
+<Child :title="data.title" :send="content" />
+
+```
+
+子:
+```vue
+const props = defineProps(['title', 'send'])
+
+function child() {
+    props.send('child')
+}
+```
+
+# 053 元件通信 方式 2: emit
+
+## 父、子元件都做設置
+父:
+
+```vue
+
+<Child @send-msg="saveMsg" />
+
+function saveMsg(data) {
+    console.log(data)
+}
+
+```
+
+子:
+```vue
+const emit = defineEmits(['send-msg'])
+
+function child() {
+    emit('send-msg', dataInChild)
+}
+```
+
+
+<hr>
+
+`$event` 相當於原生 js 在監聽事件 (`addEventListener`) 中，callback 函數的 `event` (發生事件的元素主體)
+
+# 054 元件通信 方式 3 mitt
+
+[mitt](https://github.com/developit/mitt)
+
+# 055 元件通信 方式 5 v-model
+
+```vue
+<!-- v-model 用在 html 標籤上 -->
+<input type="text" v-model="msg" /> // 開發中，一般方便的語法糖寫法
+
+<!-- 實際上，v-model 是 :value 和 @input 的簡寫 -->
+<!-- :value="msg" 實現方向A: "修改 vue 中保存的值，接著修改畫面中輸入框的值" -->
+<!-- @input="msg = $event.target.value" 實現方向B: "畫面上輸入框中值的修改行為，接著修改 vue 中變數保存的值" -->
+<!-- 方向A 和 方向B 是雙向的，所以是雙向綁定 -->
+<input type="text" :value="msg" @input="msg = $event.target.value" />
+
+
+<!-- v-model 用在自定義元件上 -->
+<MyInput v-model="msg" /> // 開發中，一般方便的語法糖寫法
+
+<!-- 實際上，v-model 是 :modelValue 和 @update:modelValue 的簡寫 -->
+<!-- :modelValue="msg" 實現方向A: "修改 vue 中保存的值，接著修改畫面中輸入框的值" -->
+<!-- @update:modelValue="msg = $event" 實現方向B: "畫面上輸入框中值的修改行為，接著修改 vue 中變數保存的值" -->
+<!-- 補充: @update:modelValue 整個名稱都是自定義事件名稱，只是這邊怪噁心帶有冒號符號 -->
+<!-- 方向A 和 方向B 是雙向的，所以是雙向綁定 -->
+
+<!-- 自訂元件標籤中的 v-model 底層工作原理  -->
+<MyInput
+    :modelValue="msg"
+    @update:modelValue="msg = $event"
+    />
+
+<!-- MyInput 的內層: 由 UI 元件庫製作團隊維護與開發 -->
+<!-- template -->
+<!-- 在這底層使用原生的 :value(讀取動態數據 + 保存地點) 和 @input(監聽鍵盤輸入事件 + callback) 來實現雙向綁定 -->
+<input type="text" :value="modelValue" @input="handleInput" />
+
+<!-- script -->
+const props = defineProps(['modelValue'])
+
+const emit = defineEmits(['update:modelValue'])
+
+function handleInput(e) {
+    emit('update:modelValue', e.target.value)
+}
+```
+## $event 到底是什麼 ? 什麼時候能 .target ?
+
+對於原生事件，$event 是事件對象 ===> 能 .target
+
+對於自訂事件，$event 是傳入的參數 ===> 不能 .target，因為身上沒有這屬性
+
+# 056 元件通信 v model 的細節
