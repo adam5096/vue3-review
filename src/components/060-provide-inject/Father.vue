@@ -29,7 +29,7 @@
 
     // 向後代元件提供數據、函數
     provide('moneyContext', { money, updateMoney })
-
+    
     provide('che', car)
 
 </script>

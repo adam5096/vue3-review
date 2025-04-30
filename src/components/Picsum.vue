@@ -23,9 +23,6 @@
     // ******** $subscribe 監聽倉庫中狀態的變化: 像極了倉庫中的 watch 的用法 ********
     // localStorage.setItem 實現數據持久化，刷新畫面不丟數據
     picsumStore.$subscribe((mutation, state) => {
-        console.log('picsumStore 倉庫發生變化 !!!')
-        // console.log('mutation', mutation)
-        // console.log('state', state)
         localStorage.setItem('picsumList', JSON.stringify(state.picsumList))
     })
     // ******** $subscribe 監聽倉庫中狀態的變化 END ********
